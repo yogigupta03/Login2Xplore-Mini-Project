@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login2Xplore basic FORM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src=" http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js "></script>
+</head>
+
+<body>
+    <div class="registration-form">
+        <form action="" method="post">
+            <div class="form-icon">
+                <span><i class="icon icon-user"></i></span>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control item" id="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control item" id="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control item" id="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control item" id="phone-number" placeholder="Phone Number" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control item" id="birth-date" placeholder="Birth Date" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="registerCandidate()" class="btn btn-block SUBMIT ">SUBMIT</button>
+            </div>
+        </form>
+
+    </div>
+    <script>
+        function validateAndGetFormData() {
+            var username = $("#username").val();
+            if (username === "") {
+                alert("username Required Value");
+                $("#username").focus();
+                return "";
+            }
+            var password = $("#password").val();
+            if (password === "") {
+                alert("password is Required Value");
+                $("#password").focus();
+                return "";
+            }
+            var email = $("#email").val();
+            if (email === "") {
+                alert("Email is Required Value");
+                $("#email").focus();
+                return "";
+            }
+            var phone = $("#phone-number").val();
+            if (phone === "") {
+                alert("phone number is Required Value");
+                $("#phone-number").focus();
+                return "";
+            }
+            var birthdate = $("#birth-date").val();
+            if (birthdate === "") {
+                alert("birth-date is Required Value");
+                $("#birth-date").focus();
+                return "";
+            }
+
+            var jsonStrObj = {
+                userame: username,
+                phoneNumber: phone,
+                birthdate: birthdate,
+                email: email,
+                password: password,
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+        function createPUTRequest(connToken, jsonObj, dbName, relName) {
+            var putRequest = "{\n"
+                + "\"token\" : \""
+                + connToken
+                + "\","
+                + "\"dbName\": \""
+                + dbName
+                + "\",\n" + "\"cmd\" : \"PUT\",\n"
+                + "\"rel\" : \""
+                + relName + "\","
+                + "\"jsonStr\": \n"
+                + jsonObj
+                + "\n"
+                + "}";
+            return putRequest;
+        }
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+        function resetForm() {
+            $("#username").val("");
+            $("#password").val("");
+            $("#email").val("");
+            $("#phone-number").val("");
+            $("#birth-date").val("");
+            $("#username").focus();
+        }
+
+        function registerCandidate() {
+
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest("90938720|",
+                jsonStr, "UserData", "base-Data");
+            alert(putReqStr);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtGivenBaseUrl(putReqStr,"http://api.login2explore.com:5577", "/api/iml");
+            jQuery.ajaxSetup({ async: true });
+            alert("INSERTED " + JSON.stringify(resultObj));
+
+            resetForm();
+
+        }
+    </script>
+</body>
+
+</html>

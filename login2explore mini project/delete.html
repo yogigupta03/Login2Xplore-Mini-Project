@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login2Xplore basic FORM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src=" http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js "></script>
+</head>
+
+<body>
+    <div class="registration-form">
+        <form action="" method="get">
+            <div class="form-icon">
+                <span><i class="icon icon-user"></i></span>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control item" id="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control item" id="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="deleteData()" class="btn btn-block SUBMIT ">DELETE</button>
+            </div>
+        </form>
+    </div>
+    <p id="show"></p>
+    <script>
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+        function deleteData() {
+            var token = "90938720|";
+            var dbname = "UserData";
+            var relationName = "base-Data";
+            var password = document.getElementById("password").value;
+
+            var reqString = createREMOVERecordRequest(token, dbname, relationName, password);
+            alert(reqString);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommand(reqString,
+                "http://api.login2explore.com:5577", "/api/iml");
+            jQuery.ajaxSetup({ async: true });
+            alert(JSON.stringify(resultObj));
+
+        }
+    </script>
+</body>
+
+</html>

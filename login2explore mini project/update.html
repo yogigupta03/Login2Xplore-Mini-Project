@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Login2Xplore Basic FORM</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+
+</head>
+
+<body>
+    <div class="registration-form">
+
+        <form action="" method="get">
+
+            <div class="form-icon">
+                <span><i class="icon icon-user"></i></span>
+            </div>
+            <center>
+                <h1>Update Data</h1>
+            </center>
+            <center>
+                <div class="form-group">
+                    <input type="text" class="form-control item" id="username" placeholder="username" required />
+                </div>
+                <div>
+                    <input type="password" class="form-control item" id="password" placeholder="password" required />
+                </div>
+                <div class="form-group">
+                    <span>You can change your password only.</span>
+                </div>
+                <div class="form-group">
+                    <input id="Newpassword" class="form-control item" placeholder="New Password" type="password" />
+                </div>
+                <div class="">
+                    <button type="button" onclick="updateData()" class="btn btn-block SUBMIT">UPDATE </button>
+                </div>
+            </center>
+        </form>
+
+    </div>
+    
+    <script>
+        function validateAndGetFormData() {
+            var username = $("#username").val();
+            if (username === "") {
+                alert("username Required Value");
+                $("#username").focus();
+                return "";
+            }
+            var password = $("#password").val();
+            if (password === "") {
+                alert("password is Required Value");
+                $("#password").focus();
+                return "";
+            }
+            var Newpassword = $("#Newpassword").val();
+            if (password === "") {
+                alert("password is Required Value");
+                $("#Newpassword").focus();
+                return "";
+            }
+        }
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+        function resetForm() {
+            $("#username").val("")
+            $("#password").val("");
+            $("#Newpassword").val("");
+            $("#username").focus();
+        }
+
+        function updateData() {
+            var jsonObj = validateAndGetFormData();
+            if (jsonObj === "") {
+                return;
+            }
+            var token = "90938720|";
+            var dbname = "UserData";
+            var relationName = "base-Data";
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("Newpassword").value;
+
+            var jsonObj = {
+                password: Newpassword,
+            };
+            var reqString = createUPDATERecordRequest(token, JSON.stringify(jsonObj), dbname, relationName, username);
+            alert(reqString);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtgivenBaseUrl(reqString,"http://api.login2explore.com:5577", "/api/iml");
+            jQuery.ajaxSetup({ async: true });
+            alert(JSON.stringify(resultObj));
+
+            resetForm();
+        }
+    </script>
+</body>
+
+</html>
